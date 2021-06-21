@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.greate.community.dao.DiscussPostMapper">
+
+    <sql id = "selectFields">
+        id, user_id, title, content, type, status, create_time, comment_count, score
+    </sql>
+
+    <sql id = "insertFields">
+        user_id, title, content, type, status, create_time, comment_count, score
+    </sql>
+
+    <!--分页查询讨论贴信息-->
+    <!--不显示拉黑的帖子, 按照是否置顶和创建时间排序-->
+    <select id = "selectDiscussPosts" resultType="DiscussPost">
+        select <include refid="selectFields"></include>
+        from discuss_post
+        where status != 2
+        <if test = "userId!=0">
+            and user_id = #{userId}
+        </if>
+        <if test = "orderMode == 0">
+            order by type desc, create_time desc
+        </if>
+        <if test = "orderMode == 1">
+            order by type desc, score desc, create_time desc
+        </if>
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--查询讨论贴的个数-->
+    <select id = "selectDiscussPostRows" resultType="int">
+        select count(id)
+        from discuss_post
+        where status != 2
+        <if test = "userId != 0">
+            and user_id = #{userId}
+        </if>
+    </select>
+
+    <!--插入/添加帖子-->
+    <insert id="insertDiscussPost" parameterType="DiscussPost" keyProperty="id">
+        insert into discuss_post (<include refid="insertFields"></include>)
+        values(#{userId}, #{title}, #{content}, #{type}, #{status}, #{createTime}, #{commentCount}, #{score})
+    </insert>
+
+    <!--根据 id 查询帖子-->
+    <select id = "selectDiscussPostById" resultType="DiscussPost">
+        select *
+        from discuss_post
+        where id = #{id}
+    </select>
+
+    <update id="updateCommentCount">
+        update discuss_post
+        set comment_count = #{commentCount}
+        where id = #{id}
+    </update>
+
+    <!--修改帖子类型：0-普通; 1-置顶;-->
+    <update id="updateType">
+        update discuss_post
+        set type = #{type}
+        where id = #{id}
+    </update>
+
+    <!--修改帖子状态：0-正常; 1-精华; 2-拉黑;-->
+    <update id="updateStatus">
+        update discuss_post
+        set status = #{status}
+        where id = #{id}
+    </update>
+
+    <!--修改帖子分数-->
+    <update id="updateScore">
+        update discuss_post
+        set score = #{score}
+        where id = #{id}
+    </update>
+
+</mapper>

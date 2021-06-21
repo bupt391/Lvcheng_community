@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="icon" type="shortcut icon" th:href="@{/img/favicon.ico}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/letter.css}" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+	<title>Echo - 私信详情</title>
+</head>
+<body>
+	<div class="nk-container">
+		<!-- 头部 -->
+		<header class="bg-dark sticky-top" th:replace="index::header"></header>
+
+		<!-- 内容 -->
+		<div class="main">
+			<div class="container">
+				<div class="row">
+					<div class="col-8">
+						<h6><b class="square"></b> 来自 <a class="text-success" th:utext="${target.username}"
+														 th:href="@{|/user/profile/${target.id}|}"></a> 的私信</h6>
+					</div>
+					<div class="col-4 text-right">
+						<button type="button" class="btn btn-secondary btn-sm" onclick="back();">返回</button>
+						<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#sendModal">
+							<i class="bi bi-chat-left-text"></i> 给TA私信
+						</button>
+					</div>
+				</div>
+				<!-- 弹出框 -->
+				<div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">发私信</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form>
+									<div class="form-group">
+										<label for="recipient-name" class="col-form-label">发给：</label>
+										<input type="text" class="form-control" id="recipient-name" th:value="${target.username}">
+									</div>
+									<div class="form-group">
+										<label for="message-text" class="col-form-label">内容：</label>
+										<textarea class="form-control" id="message-text" rows="10"></textarea>
+									</div>
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+								<button type="button" class="btn btn-primary" id="sendBtn">发送</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 提示框 -->
+				<div class="modal fade" id="hintModal" tabindex="-1" role="dialog" aria-labelledby="hintModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="hintModalLabel">提示</h5>
+							</div>
+							<div class="modal-body" id="hintBody">
+								发送完毕!
+							</div>
+						</div>
+					</div>
+				</div>						
+				
+				<!-- 私信列表 -->
+				<ul class="list-unstyled mt-4">
+					<li class="media pb-3 pt-3 mb-2" th:each="map:${letters}">
+						<a th:href="@{|/user/profile/${map.fromUser.id}|}">
+							<img th:src="${map.fromUser.headerUrl}" class="mr-4 rounded-circle user-header" alt="用户头像" >
+						</a>
+						<div class="toast show d-lg-block" role="alert" aria-live="assertive" aria-atomic="true">
+							<div class="toast-header">
+								<strong class="mr-auto" th:utext="${map.fromUser.username}"></strong>
+								<small th:text="${#dates.format(map.letter.createTime, 'yyyy-MM-dd HH:mm:ss')}"></small>
+								<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="toast-body" th:utext="${map.letter.content}"></div>
+						</div>
+					</li>
+				</ul>
+				<!-- 分页 -->
+				<nav class="mt-5" th:replace="index::pagination"></nav>
+			</div>
+		</div>
+
+		<!-- 尾部 -->
+		<footer class="bg-dark" th:replace="index::footer"></footer>
+
+	</div>
+
+	<script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+	<script th:src="@{/js/popper.min.js}"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
+	<script th:src="@{/js/global.js}"></script>
+	<script th:src="@{/js/letter.js}"></script>
+	<script>
+		function back() {
+			location.href = CONTEXT_PATH + "/letter/list";
+		}
+	</script>
+</body>
+</html>

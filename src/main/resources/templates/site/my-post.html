@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="icon" type="shortcut icon" th:href="@{/img/favicon.ico}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+	<title>Echo - 我的帖子</title>
+</head>
+<body>
+	<div class="nk-container">
+		<!-- 头部 -->
+		<header class="bg-dark sticky-top" th:replace="index::header"></header>
+
+		<!-- 内容 -->
+		<div class="main">
+			<div class="container">
+				<!-- 选项 -->
+				<div class="position-relative">
+					<ul class="nav nav-tabs" th:replace="/site/profile::profiletab"></ul>
+				</div>
+				<!-- 我的帖子 -->
+				<div class="mt-4">
+					<h6><b class="square"></b> 帖子总数 (<i th:text="${rows}"></i>)</h6>
+					<ul class="list-unstyled mt-4 pl-3 pr-3">
+						<li class="border-bottom pb-3 mt-4" th:each="map:${discussPosts}">
+							<div class="font-size-16 text-info">
+								<a th:href="@{|/discuss/detail/${map.post.id}|}" class="text-info" th:utext="${map.post.title}">文章标题</a>
+								<br>
+								<div class="text-right font-size-12 text-muted">
+									赞 <i class="mr-3" th:text="${map.likeCount}"></i>
+									评论 <i class="mr-3" th:text="${map.post.commentCount}"></i>
+									发布于 <b th:text="${#dates.format(map.post.createTime,'yyyy-MM-dd HH:mm:ss')}"></b>
+								</div>
+							</div>
+						</li>
+					</ul>
+					<!-- 分页 -->
+					<nav class="mt-5" th:replace="index::pagination"></nav>
+				</div>				
+			</div>
+		</div>
+
+		<!-- 尾部 -->
+		<footer class="bg-dark" th:replace="index::footer"></footer>
+	</div>
+
+	<script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+	<script th:src="@{/js/popper.min.js}"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
+	<script th:src="@{/js/global.js}"></script>
+</body>
+</html>
